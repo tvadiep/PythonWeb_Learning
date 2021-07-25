@@ -3,10 +3,29 @@
 {% block title %}{{post.title}}{% endblock %}
 
 {% block content %}
+
 <h3><a href="#">{{post.title}}</a></h3>
 <h6>on {{post.date}}</h6>
-{{post.body}}
+{{post.body|safe|linebreaks}}
 <br>
 <img src="{{post.image.url}}" alt="Can't display image" height="300" width = "500">
+
+{% for comment in post.comments.all %}
+    <h4><strong>{{comment.author}}</strong></h4>
+    <h6><p>{{comment.date}}</p></h6>
+    <p>{{comment.body|linebreaks}}</p>
+{% endfor %}
+
+{% if user.username %}
+    <form action="{% url 'post' post.id %}" method = 'POST'>
+        {% csrf_token %}
+        <p><label>Comment:</label></p>
+        {{form.body}}
+        <br/>
+        <input type = "submit" value = "comment"/>
+    </form>
+{% endif %}
+
+
 
 {% endblock %}
